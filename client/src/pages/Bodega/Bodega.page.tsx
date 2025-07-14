@@ -48,6 +48,12 @@ const BodegaPage: React.FC = () => {
 
   const handleAdd = async () => {
     try {
+      // Validación básica
+      if (!form.name || !form.code) {
+        setError('Por favor, completa al menos el nombre y el código único del producto');
+        return;
+      }
+
       let imgUrl = form.img;
       if (fileImg) {
         // Simulación de subida de imagen (debes implementar el endpoint real en el backend)
@@ -62,10 +68,19 @@ const BodegaPage: React.FC = () => {
       setShowModal(false);
       setForm(initialProduct);
       setFileImg(null);
+      setError(''); // Limpiar error al éxito
       fetchProducts();
     } catch (err: any) {
-      const msg = err?.response?.data?.message || 'Error al agregar producto';
-      setError(msg + (err?.response?.data?.error ? ': ' + JSON.stringify(err.response.data.error) : ''));
+      console.error('Error completo:', err);
+      
+      if (err?.response?.status === 400 && err?.response?.data?.message?.includes('duplicate key')) {
+        setError(`El código "${form.code}" ya existe. Por favor, usa un código único diferente.`);
+      } else if (err?.response?.data?.message?.includes('E11000')) {
+        setError(`Ya existe un producto con ese código. Por favor, usa un código único diferente.`);
+      } else {
+        const msg = err?.response?.data?.message || 'Error al agregar producto';
+        setError(msg);
+      }
     }
   };
 
@@ -151,7 +166,8 @@ const BodegaPage: React.FC = () => {
           </IonHeader>
           <IonContent className="ion-padding">
             <IonInput label="Nombre" name="name" value={form.name} onIonChange={handleInput} />
-            <IonInput label="Código" name="codeProduct" value={form.codeProduct} onIonChange={handleInput} />
+            <IonInput label="Código del Producto" name="codeProduct" value={form.codeProduct} onIonChange={handleInput} />
+            <IonInput label="Código Único" name="code" value={form.code} onIonChange={handleInput} />
             <IonInput label="Marca" name="brand" value={form.brand} onIonChange={handleInput} />
             <IonInput label="Stock" name="stock" type="number" value={form.stock} onIonChange={handleInput} />
             <IonInput label="Precio" name="price" type="number" value={form.price[0]?.value} onIonChange={e => setForm((prev: any) => ({ ...prev, price: [{ date: new Date(), value: Number(e.detail.value) }] }))} />
@@ -172,7 +188,8 @@ const BodegaPage: React.FC = () => {
           </IonHeader>
           <IonContent className="ion-padding">
             <IonInput label="Nombre" name="name" value={form.name} onIonChange={handleInput} />
-            <IonInput label="Código" name="codeProduct" value={form.codeProduct} onIonChange={handleInput} />
+            <IonInput label="Código del Producto" name="codeProduct" value={form.codeProduct} onIonChange={handleInput} />
+            <IonInput label="Código Único" name="code" value={form.code} onIonChange={handleInput} />
             <IonInput label="Marca" name="brand" value={form.brand} onIonChange={handleInput} />
             <IonInput label="Stock" name="stock" type="number" value={form.stock} onIonChange={handleInput} />
             <IonInput label="Precio" name="price" type="number" value={form.price[0]?.value} onIonChange={e => setForm((prev: any) => ({ ...prev, price: [{ date: new Date(), value: Number(e.detail.value) }] }))} />
@@ -202,8 +219,13 @@ const BodegaPage: React.FC = () => {
           ]}
         />
 
-        {error && <IonText color="danger"><p>{error}</p></IonText>}
-        {error && <pre style={{color:'red', fontSize:12}}>{error}</pre>}
+        {error && (
+          <div style={{ padding: '16px', margin: '16px', backgroundColor: '#ffebee', borderRadius: '8px', border: '1px solid #ffcdd2' }}>
+            <IonText color="danger">
+              <p><strong>Error:</strong> {error}</p>
+            </IonText>
+          </div>
+        )}
       </IonContent>
     </IonPage>
   );

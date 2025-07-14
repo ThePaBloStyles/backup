@@ -43,7 +43,13 @@ import RubrosPage from './pages/Rubros/Rubro.page';
 import UserAdministrationPage from './pages/UserAdministrations/userAdministration.page';
 import UserDetailPage from './pages/UserAdministrations/UserDetail.page';
 import ResultadosPage from './pages/Resultados/Resultado.page';
+import ProductDetail from './pages/ProductDetail/ProductDetail.page';
+import CartPage from './pages/Cart/Cart.page';
+import CheckoutPage from './pages/Checkout/Checkout.page';
+import PaymentResultPage from './pages/PaymentResult/PaymentResult.page';
+import { AuthTestPage } from './pages/AuthTest/AuthTest.page';
 import { ItemProvider } from './contexts/Item.context';
+import { CartProvider } from './contexts/Cart.context';
 
 setupIonicReact();
 
@@ -86,6 +92,21 @@ const Service = () => {
         <Route exact path="/resultados">
           <ResultadosPage/>
         </Route>
+        <Route exact path="/product/:id">
+          <ProductDetail />
+        </Route>
+        <Route exact path="/cart">
+          <CartPage />
+        </Route>
+        <Route exact path="/checkout">
+          <CheckoutPage />
+        </Route>
+        <Route exact path="/payment/result">
+          <PaymentResultPage />
+        </Route>
+        <Route exact path="/auth-test">
+          <AuthTestPage />
+        </Route>
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
@@ -96,9 +117,11 @@ const Service = () => {
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
-      <ItemProvider>
-        <Service></Service>
-      </ItemProvider>
+      <CartProvider>
+        <ItemProvider>
+          <Service></Service>
+        </ItemProvider>
+      </CartProvider>
     </IonReactRouter>
   </IonApp>
 );

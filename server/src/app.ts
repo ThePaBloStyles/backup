@@ -99,6 +99,12 @@ export const App = () => {
   });
   
   app.listen(port, () => {
+    console.log('🌟 ===============================================');
+    console.log(`🚀 Servidor iniciado en puerto ${port}`);
+    console.log(`🔧 Modo: ${nodeEnv}`);
+    console.log(`🌍 Entorno de desarrollo: ${nodeEnv === 'development' ? 'SÍ' : 'NO'}`);
+    console.log(`💳 Webpay simulado: ${nodeEnv === 'development' ? 'ACTIVADO' : 'DESACTIVADO'}`);
+    console.log('🌟 ===============================================');
     console.log(i18n.__n(`${locale.es.serverMessage}`, port))
   });
 }

@@ -49,7 +49,7 @@ export const SideMenu = () => {
           </IonAccordion> 
 
           {/* Opción 2 - Simple */}
-         <IonAccordion value="opcion1">
+         <IonAccordion value="opcion2">
             <IonItem slot="header" color="light">
               <IonLabel>Materiales</IonLabel>
             </IonItem>
@@ -83,7 +83,7 @@ export const SideMenu = () => {
           </IonAccordion> 
 
           {/* Opción 3 - Sin sub-opciones */}
-           <IonAccordion value="opcion1">
+           <IonAccordion value="opcion3">
             <IonItem slot="header" color="light">
               <IonLabel>Seguridad</IonLabel>
             </IonItem>

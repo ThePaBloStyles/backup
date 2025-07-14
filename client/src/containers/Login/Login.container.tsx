@@ -1,6 +1,7 @@
 import { IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRow, IonInput, IonButton } from "@ionic/react"
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import api from "../../utils/api";
 
 export const LoginContainer = () => {
     const [email, setEmail] = useState('');
@@ -13,12 +14,8 @@ export const LoginContainer = () => {
             return;
         }
         try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await response.json();
+            const response = await api.post('/api/auth/login', { email, password });
+            const data = response.data;
             if (data.state) {
                 // Guarda el token en localStorage
                 if (data.token && data.token.token) {
@@ -45,6 +42,7 @@ export const LoginContainer = () => {
                 alert('Credenciales incorrectas');
             }
         } catch (error) {
+            console.error('Error en login:', error);
             alert('Error de conexión o del servidor. Intente más tarde.');
         }
     }

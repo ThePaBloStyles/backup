@@ -5,6 +5,7 @@ import UsersRoute from './Users.route'
 import RolesRoute from './Role.route'
 import AdminRoute from './Admin.route'
 import ItemRoute from './Item.route' // Assuming Item.route exports a default router
+import PaymentRoute from './Payment.route'
 
 const router = Router()
 
@@ -15,6 +16,7 @@ router.use('/api/users', UsersRoute)
 router.use('/api/roles', RolesRoute)
 router.use('/api/items', ItemRoute) // Assuming Item.route exports a default router
 router.use('/api/admin', AdminRoute)
+router.use('/api/payment', PaymentRoute)
 
 export default router
 
