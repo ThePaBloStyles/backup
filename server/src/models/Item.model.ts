@@ -15,6 +15,9 @@ const itemSchema: Schema = new Schema(
         name: {
             type: String
         },
+        description: {
+            type: String
+        },
         price: [
             {
                 date: Date,

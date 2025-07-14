@@ -15,6 +15,7 @@ import { SideMenu } from '../../components/Menu';
 import { ItemCard } from '../../components/ItemCard';
 import { SearchBar } from '../../components/Search';
 import { useItem } from '../../contexts/Item.context';
+import ProductDetail from '../ProductDetail/ProductDetail.page';
 
 
 // --- Estructura Principal de la App ---
@@ -99,6 +100,7 @@ const AppStructure: React.FC = () => {
                 <Route path="/opcion1/sub2" render={() => <p>Página de Sub-Opción 1.2</p>} exact={true} />
                 <Route path="/opcion2" render={() => <p>Página de Opción 2</p>} exact={true} />
                 <Route path="/opcion3" render={() => <p>Página de Opción 3</p>} exact={true} />
+                <Route path="/product/:id" component={ProductDetail} exact={true} />
                 <Redirect exact from="/" to="/opcion1/sub1" />
             </IonRouterOutlet>
             <IonGrid>

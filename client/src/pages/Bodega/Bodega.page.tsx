@@ -108,7 +108,7 @@ const BodegaPage: React.FC = () => {
       </IonHeader>
       <IonContent>
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton onClick={() => setShowModal(true)} color="success">
+        <IonFabButton onClick={() => { setForm(initialProduct); setFileImg(null); setShowModal(true); }} color="success">
             <IonIcon icon={add} />
           </IonFabButton>
         </IonFab>
