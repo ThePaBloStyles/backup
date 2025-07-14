@@ -35,6 +35,37 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-danger-tint: #ea6150;
 }
 
+/* Configuración específica para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Ajustes para colores primarios en modo oscuro */
+    --ion-color-primary: #6A6A6A;
+    --ion-color-primary-rgb: 106, 106, 106;
+    --ion-color-primary-contrast: #000000;
+    --ion-color-primary-contrast-rgb: 0, 0, 0;
+    --ion-color-primary-shade: #5e5e5e;
+    --ion-color-primary-tint: #797979;
+
+    /* Colores secundarios ajustados para modo oscuro */
+    --ion-color-secondary: #3399FF;
+    --ion-color-secondary-rgb: 51, 153, 255;
+    --ion-color-secondary-shade: #2e8ae6;
+    --ion-color-secondary-tint: #47a3ff;
+
+    /* Colores de éxito ajustados */
+    --ion-color-success: #32C767;
+    --ion-color-success-rgb: 50, 199, 103;
+    --ion-color-success-shade: #2caf5a;
+    --ion-color-success-tint: #46cc76;
+
+    /* Colores de peligro ajustados */
+    --ion-color-danger: #FF5252;
+    --ion-color-danger-rgb: 255, 82, 82;
+    --ion-color-danger-shade: #e04848;
+    --ion-color-danger-tint: #ff6363;
+  }
+}
+
 /* Estilos personalizados para las tarjetas de productos */
 .product-card:hover {
   transform: translateY(-4px);
@@ -66,6 +97,20 @@ ion-chip:hover {
   border-color: #4A4A4A;
 }
 
+/* Chips en modo oscuro */
+@media (prefers-color-scheme: dark) {
+  ion-chip {
+    --color: #b0b0b0;
+    border-color: #555;
+  }
+  
+  ion-chip:hover {
+    --background: rgba(255, 255, 255, 0.1);
+    --color: #e0e0e0;
+    border-color: #777;
+  }
+}
+
 /* Estilos para la barra de búsqueda */
 ion-searchbar {
   --background: white;
@@ -75,6 +120,18 @@ ion-searchbar {
   --clear-button-color: #666;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Searchbar en modo oscuro */
+@media (prefers-color-scheme: dark) {
+  ion-searchbar {
+    --background: #2d2d2d;
+    --color: #e0e0e0;
+    --placeholder-color: #b0b0b0;
+    --icon-color: #b0b0b0;
+    --clear-button-color: #b0b0b0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
 }
 
 /* Estilos responsivos */

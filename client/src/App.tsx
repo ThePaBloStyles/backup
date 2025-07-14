@@ -32,7 +32,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import { LoginPage } from './pages/Login/Login.page';
-import Home from './pages/Home/Home.page';
+import HomePage from './pages/Home/Home.page';
 import AdminPage from './pages/Admin/Admin.page';
 import AdminUsersPage from './pages/Admin/AdminUsers.page';
 import AdminProductsPage from './pages/Admin/AdminProducts.page';
@@ -64,7 +64,7 @@ const Service = () => {
         <RegisterPage />
         </Route>
         <Route exact path="/home">
-          <Home username="Joaquín" /> 
+          <HomePage /> 
         </Route>
         <Route exact path="/admin">
           <AdminPage />
