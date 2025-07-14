@@ -25,6 +25,7 @@ const BodegaPage: React.FC = () => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [form, setForm] = useState<any>(initialProduct);
+  const [fileImg, setFileImg] = useState<File|null>(null);
   const [error, setError] = useState('');
 
   const fetchProducts = async () => {
@@ -47,9 +48,20 @@ const BodegaPage: React.FC = () => {
 
   const handleAdd = async () => {
     try {
-      await axios.post('/api/items', form);
+      let imgUrl = form.img;
+      if (fileImg) {
+        // Simulación de subida de imagen (debes implementar el endpoint real en el backend)
+        const data = new FormData();
+        data.append('file', fileImg);
+        // Ejemplo: const res = await axios.post('/api/upload', data);
+        // imgUrl = res.data.url;
+        imgUrl = URL.createObjectURL(fileImg); // Solo para mostrar en frontend
+      }
+      const payload = { ...form, img: imgUrl };
+      await axios.post('/api/items', payload);
       setShowModal(false);
       setForm(initialProduct);
+      setFileImg(null);
       fetchProducts();
     } catch (err: any) {
       const msg = err?.response?.data?.message || 'Error al agregar producto';
@@ -85,6 +97,7 @@ const BodegaPage: React.FC = () => {
       setError('Error al eliminar producto');
     }
   };
+
 
   return (
     <IonPage>
@@ -143,7 +156,9 @@ const BodegaPage: React.FC = () => {
             <IonInput label="Stock" name="stock" type="number" value={form.stock} onIonChange={handleInput} />
             <IonInput label="Precio" name="price" type="number" value={form.price[0]?.value} onIonChange={e => setForm((prev: any) => ({ ...prev, price: [{ date: new Date(), value: Number(e.detail.value) }] }))} />
             <IonInput label="Imagen (URL)" name="img" value={form.img} onIonChange={handleInput} />
+            <input type="file" accept="image/*" onChange={e => setFileImg(e.target.files?.[0] || null)} style={{marginTop:10, marginBottom:10}} />
             <IonButton expand="block" onClick={handleAdd} color="success">Agregar</IonButton>
+            <IonButton expand="block" fill="outline" onClick={() => { setForm(initialProduct); setFileImg(null); }}>Limpiar</IonButton>
             <IonButton expand="block" fill="clear" onClick={() => setShowModal(false)}>Cancelar</IonButton>
           </IonContent>
         </IonModal>

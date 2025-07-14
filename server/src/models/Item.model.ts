@@ -9,7 +9,8 @@ const itemSchema: Schema = new Schema(
             type: String
         },
         code: {
-            type: String
+            type: String,
+            unique: true
         },
         name: {
             type: String
