@@ -1,0 +1,21 @@
+{
+  "name": "punto_venta",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently --kill-others-on-fail \"npm run dev-server\" \"npm run dev-client\"",
+    "dev-server": "npm run dev --prefix server",
+    "dev-client": "npm run dev --prefix client",
+    "install-server": "cd ./server && npm install",
+    "install-client": "cd ./client && npm install",
+    "postinstall": "npm run install-server && npm run install-client"
+  },
+  "author": "Gonzalo Orellana C",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "concurrently": "^8.2.2"
+  }
+}

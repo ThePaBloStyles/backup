@@ -1,0 +1,9 @@
+{
+	"serverMessage": "Servidor corriendo en puerto %s",
+	"Email {{email}} not found": "Email {{email}} no encontrado",
+	"Wrong password": "Error de password",
+	"Servidor corriendo en puerto %s": {
+		"one": "Servidor corriendo en puerto %s",
+		"other": "Servidor corriendo en puerto %s"
+	}
+}

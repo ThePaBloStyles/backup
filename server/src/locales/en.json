@@ -1,0 +1,5 @@
+{
+    "serverMessage": "Server running in port %s",
+	"Email {{email}} not found": "Email {{email}} no encontrado",
+	"Wrong password": "Wrong password"
+}

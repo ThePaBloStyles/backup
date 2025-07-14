@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+      "baseUrl": "src",
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "target": "es6",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "sourceMap": true,
+      "outDir": "dist",
+      "paths": {
+        "@/*": ["*"],
+        "@controllers/*": ["controllers/*"],
+        "@configs/*": ["configs/*"],
+        "@databases/*": ["databases/*"],
+        "@exceptions/*": ["exceptions/*"],
+        "@interfaces/*": ["interfaces/*"],
+        "@middlewares/*": ["middlewares/*"],
+        "@models/*": ["models/*"],
+        "@routes/*": ["routes/*"],
+        "@services/*": ["services/*"],
+        "@utils/*": ["utils/*"],
+      }
+    },
+    "lib": ["es2015"],
+    "include": ["src/**/*.ts", "src/**/*.json", ".env"],
+    "exclude": ["node_modules"]
+}
