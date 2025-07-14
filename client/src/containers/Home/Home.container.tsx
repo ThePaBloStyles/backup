@@ -308,15 +308,23 @@ export const HomeContainer = () => {
                     }
                     
                     .logout-button, .profile-button, .login-button, .cart-button {
-                        --color: white;
+                        --color: white !important;
                         --background-hover: rgba(255, 255, 255, 0.1);
                         --border-radius: 8px;
                         position: relative;
                         transition: all 0.3s ease;
+                        color: white;
                     }
                     
                     .logout-button:hover, .profile-button:hover, .login-button:hover, .cart-button:hover {
                         transform: translateY(-1px);
+                        --color: white !important;
+                        color: white;
+                    }
+                    
+                    /* Asegurar que los iconos siempre sean blancos en el header */
+                    .logout-button ion-icon, .profile-button ion-icon, .login-button ion-icon, .cart-button ion-icon {
+                        color: white !important;
                     }
                     
                     .cart-badge {
@@ -422,6 +430,7 @@ export const HomeContainer = () => {
                     .welcome-login-button {
                         --background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
                         --background-activated: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+                        --color: #ffffff !important;
                         --border-radius: 15px;
                         --box-shadow: 0 8px 30px rgba(44, 62, 80, 0.4);
                         height: 50px;
@@ -429,16 +438,20 @@ export const HomeContainer = () => {
                         font-size: 16px;
                         transition: all 0.3s ease;
                         min-width: 160px;
+                        color: #ffffff;
                     }
                     
                     .welcome-login-button:hover {
                         --box-shadow: 0 12px 40px rgba(44, 62, 80, 0.6);
+                        --color: #ffffff !important;
+                        color: #ffffff;
                         transform: translateY(-3px);
                     }
                     
                     .welcome-register-button {
                         --background: linear-gradient(135deg, #4a5568 0%, #718096 100%);
                         --background-activated: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+                        --color: #ffffff !important;
                         --border-radius: 15px;
                         --box-shadow: 0 8px 30px rgba(74, 85, 104, 0.4);
                         height: 50px;
@@ -446,10 +459,13 @@ export const HomeContainer = () => {
                         font-size: 16px;
                         transition: all 0.3s ease;
                         min-width: 160px;
+                        color: #ffffff;
                     }
                     
                     .welcome-register-button:hover {
                         --box-shadow: 0 12px 40px rgba(74, 85, 104, 0.6);
+                        --color: #ffffff !important;
+                        color: #ffffff;
                         transform: translateY(-3px);
                     }
                     
@@ -458,23 +474,29 @@ export const HomeContainer = () => {
                         .welcome-login-button {
                             --background: linear-gradient(135deg, #e2e8f0 0%, #f7fafc 100%);
                             --background-activated: linear-gradient(135deg, #cbd5e0 0%, #e2e8f0 100%);
-                            --color: #2d3748;
+                            --color: #2d3748 !important;
                             --box-shadow: 0 8px 30px rgba(226, 232, 240, 0.3);
+                            color: #2d3748;
                         }
                         
                         .welcome-login-button:hover {
                             --box-shadow: 0 12px 40px rgba(226, 232, 240, 0.4);
+                            --color: #2d3748 !important;
+                            color: #2d3748;
                         }
                         
                         .welcome-register-button {
                             --background: linear-gradient(135deg, #a0aec0 0%, #cbd5e0 100%);
                             --background-activated: linear-gradient(135deg, #718096 0%, #a0aec0 100%);
-                            --color: #1a202c;
+                            --color: #1a202c !important;
                             --box-shadow: 0 8px 30px rgba(160, 174, 192, 0.3);
+                            color: #1a202c;
                         }
                         
                         .welcome-register-button:hover {
                             --box-shadow: 0 12px 40px rgba(160, 174, 192, 0.4);
+                            --color: #1a202c !important;
+                            color: #1a202c;
                         }
                     }
                     

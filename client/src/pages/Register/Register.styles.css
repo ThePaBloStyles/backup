@@ -1,0 +1,242 @@
+/* Register Page Styles */
+.register-page {
+  --background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #4a5568 100%);
+}
+
+.register-content {
+  --background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #4a5568 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.register-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.register-card {
+  --background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 0;
+}
+
+.register-card ion-card-header {
+  text-align: center;
+  padding: 30px 30px 20px 30px;
+}
+
+.register-card ion-card-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.register-card ion-card-content {
+  padding: 0 30px 30px 30px;
+}
+
+.register-item {
+  --background: transparent;
+  --border-color: rgba(102, 126, 234, 0.3);
+  --color: #333;
+  --placeholder-color: rgba(51, 51, 51, 0.6);
+  margin-bottom: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.register-item:hover {
+  --border-color: rgba(102, 126, 234, 0.5);
+  transform: translateY(-2px);
+}
+
+.register-item ion-label {
+  --color: #667eea;
+  font-weight: 500;
+}
+
+.register-item ion-input {
+  --color: #333;
+  --placeholder-color: rgba(51, 51, 51, 0.6);
+  font-size: 16px;
+}
+
+.phone-item {
+  padding: 0 !important;
+}
+
+.phone-input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+}
+
+.phone-prefix {
+  color: #667eea;
+  font-weight: 600;
+  font-size: 16px;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.phone-input-container ion-input {
+  flex: 1;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.register-button {
+  --background: linear-gradient(135deg, #333 0%, #555 100%);
+  --color: #ffffff !important;
+  --border-radius: 12px;
+  margin-top: 30px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: none;
+  transition: all 0.3s ease;
+  color: #ffffff;
+}
+
+.register-button:hover {
+  --background: linear-gradient(135deg, #555 0%, #777 100%);
+  --color: #ffffff !important;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(51, 51, 51, 0.3);
+}
+
+.back-to-login-button {
+  --color: #333333 !important;
+  --background: transparent;
+  --border-radius: 12px;
+  margin-top: 15px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: none;
+  transition: all 0.3s ease;
+  color: #333333;
+}
+
+.back-to-login-button:hover {
+  --color: #667eea !important;
+  --background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  transform: translateY(-2px);
+}
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  .register-page {
+    --background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  .register-content {
+    --background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  .register-card {
+    --background: rgba(40, 40, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .register-card ion-card-title {
+    color: #ffffff;
+  }
+
+  .register-item {
+    --background: rgba(60, 60, 60, 0.5);
+    --border-color: rgba(255, 255, 255, 0.2);
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .register-item:hover {
+    --border-color: rgba(255, 255, 255, 0.4);
+    --background: rgba(80, 80, 80, 0.6);
+  }
+
+  .register-item ion-label {
+    --color: #a0a0a0;
+  }
+
+  .register-item ion-input {
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .phone-prefix {
+    color: #a0a0a0;
+  }
+
+  .register-button {
+    --background: linear-gradient(135deg, #e0e0e0 0%, #f0f0f0 100%);
+    --color: #333333 !important;
+    color: #333333;
+  }
+
+  .register-button:hover {
+    --background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
+    --color: #333333 !important;
+    color: #333333;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+  }
+
+  .back-to-login-button {
+    --color: #a0a0a0 !important;
+    --background: transparent;
+    color: #a0a0a0;
+  }
+
+  .back-to-login-button:hover {
+    --color: #ffffff !important;
+    --background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .register-container {
+    max-width: 350px;
+  }
+
+  .register-card {
+    border-radius: 16px;
+  }
+
+  .register-card ion-card-header {
+    padding: 25px 25px 15px 25px;
+  }
+
+  .register-card ion-card-title {
+    font-size: 24px;
+  }
+
+  .register-card ion-card-content {
+    padding: 0 25px 25px 25px;
+  }
+
+  .register-item {
+    margin-bottom: 15px;
+  }
+
+  .register-button,
+  .back-to-login-button {
+    height: 45px;
+    font-size: 15px;
+  }
+}

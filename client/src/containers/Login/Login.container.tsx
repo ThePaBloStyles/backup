@@ -355,16 +355,20 @@ export const LoginContainer = () => {
                     margin-top: 30px;
                     --background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
                     --background-activated: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+                    --color: #ffffff !important;
                     --border-radius: 12px;
                     --box-shadow: 0 8px 25px rgba(44, 62, 80, 0.4);
                     height: 50px;
                     font-weight: 600;
                     font-size: 16px;
                     transition: all 0.3s ease;
+                    color: #ffffff;
                 }
                 
                 .login-button:hover {
                     --box-shadow: 0 12px 35px rgba(44, 62, 80, 0.6);
+                    --color: #ffffff !important;
+                    color: #ffffff;
                     transform: translateY(-2px);
                 }
                 
@@ -373,12 +377,15 @@ export const LoginContainer = () => {
                     .login-button {
                         --background: linear-gradient(135deg, #e2e8f0 0%, #f7fafc 100%);
                         --background-activated: linear-gradient(135deg, #cbd5e0 0%, #e2e8f0 100%);
-                        --color: #2d3748;
+                        --color: #2d3748 !important;
                         --box-shadow: 0 8px 25px rgba(226, 232, 240, 0.3);
+                        color: #2d3748;
                     }
                     
                     .login-button:hover {
                         --box-shadow: 0 12px 35px rgba(226, 232, 240, 0.4);
+                        --color: #2d3748 !important;
+                        color: #2d3748;
                     }
                 }
                 
