@@ -11,8 +11,12 @@ class PaymentController {
   private static WEBPAY_API_KEY = process.env.WEBPAY_API_KEY || 'tu_api_key_aqui';
   private static WEBPAY_COMMERCE_CODE = process.env.WEBPAY_COMMERCE_CODE || 'tu_commerce_code_aqui';
   private static WEBPAY_BASE_URL = process.env.WEBPAY_BASE_URL || 'https://webpay3gint.transbank.cl';
-  private static RETURN_URL = process.env.FRONTEND_URL + '/payment/return';
-  private static FINAL_URL = process.env.FRONTEND_URL + '/payment/result';
+  private static get RETURN_URL() {
+    return (process.env.FRONTEND_URL || 'http://localhost:5176') + '/payment/return';
+  }
+  private static get FINAL_URL() {
+    return (process.env.FRONTEND_URL || 'http://localhost:5176') + '/payment/result';
+  }
   private static IS_DEVELOPMENT = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'developement';
 
   /**

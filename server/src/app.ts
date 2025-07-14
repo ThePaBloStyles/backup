@@ -58,10 +58,10 @@ const initializeMiddlewares = () => {
       app.use(morgan('dev', { stream }))
   }
   app.use(cors({
-      origin:true, 
-      credentials:true,
-      /* methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
-      optionsSuccessStatus: 200 */
+      origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'], 
+      credentials: true,
+      methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
+      optionsSuccessStatus: 200
   }))
   app.use(hpp())
   app.use(compression())
@@ -70,24 +70,16 @@ const initializeMiddlewares = () => {
   app.use(express.urlencoded({ extended: true, limit: '50mb' }))
   app.use(cookieParser())
   app.use(i18n.init)
-  initializeRoutes()
-  app.use(express.urlencoded({ extended: true }))
-  app.use(helmet({
-      crossOriginEmbedderPolicy: false
-  }))
+  
   app.use((req, res, next) => {
-    //Enabling CORS
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
     res.setHeader(
         'Permissions-Policy',
         'geolocation=()'
     )
     next()
   })
-  // Eliminado el intento de servir archivos estáticos y el index.html para evitar crash
-
+  
+  initializeRoutes()
 }
 
 export const App = () => {
