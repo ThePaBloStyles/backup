@@ -3,27 +3,22 @@ import { model, Schema, Document } from 'mongoose'
 const itemSchema: Schema = new Schema(
     {
         codeProduct:{
-            type: String,
-            required: true
+            type: String
         },
         brand: {
-            type: String,
-            required: true
+            type: String
         },
         code: {
-            type: String,
-            required: true
+            type: String
         },
         name: {
-            type: String,
-            required: true
+            type: String
         },
         price: [
             {
                 date: Date,
                 value: {
-                    type: Number,
-                    required: true
+                    type: Number
                 }
             }
         ],

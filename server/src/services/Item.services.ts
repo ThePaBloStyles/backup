@@ -1,3 +1,6 @@
+export const deleteItem = async (id: string) => {
+    return await itemModel.findByIdAndDelete(id);
+}
 import itemModel from "@/models/Item.model";
 
 export const createItem = async (itemData: any) => {

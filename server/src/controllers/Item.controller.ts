@@ -1,9 +1,29 @@
+// ...existing code...
+
+export const deleteItem = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.query;
+        if (!id) return res.status(400).json({ message: 'Falta el id del producto' });
+        const deleted = await import("../services/Item.services").then(m => m.deleteItem(id as string));
+        if (!deleted) return res.status(404).json({ message: 'Producto no encontrado' });
+        res.status(200).json({ message: 'Producto eliminado', item: deleted });
+    } catch (error) {
+        res.status(400).json({ message: 'Error al eliminar producto', error });
+    }
+};
 import { createItem, findItemAndEdit, findItems, findItemAndAddPrice } from "@/services/Item.services";
 import { Request, Response } from "express";
 
 export const postItem = async (req: Request, res: Response) => {
     try {
         const itemData = req.body;
+        // Validar duplicado por 'code'
+        if (itemData.code) {
+            const exists = await import("../models/Item.model").then(m => m.default.findOne({ code: itemData.code }));
+            if (exists) {
+                return res.status(409).json({ message: 'Ya existe un producto con ese código', item: exists });
+            }
+        }
         const item = await createItem(itemData);
         res.status(201).json({ message: 'Item created successfully', item });
     } catch (error) {
