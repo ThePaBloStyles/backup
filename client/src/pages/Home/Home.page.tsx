@@ -36,8 +36,8 @@ const AppStructure: React.FC = () => {
     if (!isAuthenticated) {
       // Si no está logueado, ir al login
       history.push('/login');
-    } else if (user?.role === 'administrador') {
-      // Si es admin, ir al panel de administrador
+    } else if (user?.role === 'administrador' || user?.role === 'bodeguero') {
+      // Si es admin o bodeguero, ir al panel de administrador
       history.push('/admin');
     } else {
       // Si es usuario normal, ir al perfil (por ahora al login, luego puedes crear una página de perfil)

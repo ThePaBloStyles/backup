@@ -23,9 +23,13 @@ export const LoginContainer = () => {
                 }
                 // Verifica el rol del usuario
                 const user = data.findUser || data.user;
-                if (user && user.role === 'administrador') {
-                    localStorage.setItem('userRole', 'administrador');
-                    alert('Bienvenido SuperAdmin');
+                if (user && (user.role === 'administrador' || user.role === 'bodeguero')) {
+                    localStorage.setItem('userRole', user.role);
+                    if (user.role === 'administrador') {
+                        alert('Bienvenido SuperAdmin');
+                    } else if (user.role === 'bodeguero') {
+                        alert('Bienvenido Bodeguero');
+                    }
                     history.push('/admin');
                     setTimeout(() => {
                         window.location.reload();

@@ -163,15 +163,26 @@ const UserAdministrationPage: React.FC = () => {
                       Administrar esta persona
                     </IonButton>
                     <div style={{marginTop:'15px'}}>
-                      <IonButton color="tertiary" style={{marginRight:'10px'}} onClick={async () => {
-                        const newRole = selectedUser.role === 'usuario' ? 'administrador' : 'usuario';
-                        if (window.confirm(`¿Seguro que quieres cambiar el rol a ${newRole}?`)) {
-                          await handleEditSave(selectedUser._id, { role: newRole });
-                          alert('Rol actualizado correctamente');
-                        }
-                      }}>
-                        Cambiar rol a {selectedUser.role === 'usuario' ? 'administrador' : 'usuario'}
-                      </IonButton>
+                      <div style={{marginBottom:'10px', display:'flex', alignItems:'center', gap:'10px'}}>
+                        <label htmlFor="roleSelect" style={{fontWeight:'bold', minWidth:'80px'}}>Rol:</label>
+                        <IonSelect 
+                          id="roleSelect"
+                          value={selectedUser.role} 
+                          placeholder="Seleccionar rol"
+                          style={{maxWidth:'200px'}}
+                          onIonChange={async (e) => {
+                            const newRole = e.detail.value;
+                            if (newRole !== selectedUser.role && window.confirm(`¿Seguro que quieres cambiar el rol a ${newRole}?`)) {
+                              await handleEditSave(selectedUser._id, { role: newRole });
+                              alert('Rol actualizado correctamente');
+                            }
+                          }}
+                        >
+                          <IonSelectOption value="usuario">Usuario</IonSelectOption>
+                          <IonSelectOption value="bodeguero">Bodeguero</IonSelectOption>
+                          <IonSelectOption value="administrador">Administrador</IonSelectOption>
+                        </IonSelect>
+                      </div>
                       <IonButton color="secondary" style={{marginRight:'10px'}} onClick={async () => {
                         const newName = prompt('Nuevo nombre:', selectedUser.name);
                         if (newName && window.confirm(`¿Seguro que quieres cambiar el nombre a "${newName}"?`)) {
