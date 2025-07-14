@@ -48,6 +48,7 @@ import CartPage from './pages/Cart/Cart.page';
 import CheckoutPage from './pages/Checkout/Checkout.page';
 import PaymentResultPage from './pages/PaymentResult/PaymentResult.page';
 import { AuthTestPage } from './pages/AuthTest/AuthTest.page';
+import ProfilePage from './pages/Profile/Profile.page';
 import { ItemProvider } from './contexts/Item.context';
 import { CartProvider } from './contexts/Cart.context';
 
@@ -106,6 +107,9 @@ const Service = () => {
         </Route>
         <Route exact path="/auth-test">
           <AuthTestPage />
+        </Route>
+        <Route exact path="/profile">
+          <ProfilePage />
         </Route>
         <Route exact path="/">
           <Redirect to="/login" />

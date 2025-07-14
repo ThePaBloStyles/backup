@@ -16,6 +16,7 @@ export interface UserProject {
     state: boolean
     deleted: boolean
     phone: string
+    address: string
     user_id: number
     emailVerifiedAt: Date
     createdAt: Date

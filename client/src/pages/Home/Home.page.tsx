@@ -40,8 +40,8 @@ const AppStructure: React.FC = () => {
       // Si es admin o bodeguero, ir al panel de administrador
       history.push('/admin');
     } else {
-      // Si es usuario normal, ir al perfil (por ahora al login, luego puedes crear una página de perfil)
-      history.push('/login'); // Cambiar por '/profile' cuando crees la página de perfil
+      // Si es usuario normal, ir al perfil
+      history.push('/profile');
     }
   };
 
