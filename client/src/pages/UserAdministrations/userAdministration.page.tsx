@@ -1,9 +1,9 @@
-import { IonPage, IonContent, IonButton, IonIcon, IonList, IonItem, IonLabel, IonSelect, IonSelectOption, IonChip, IonGrid, IonRow, IonCol } from '@ionic/react';
+import { IonPage, IonContent, IonButton, IonIcon, IonList, IonItem, IonLabel, IonSelect, IonSelectOption, IonChip, IonGrid, IonRow, IonCol, IonModal, IonHeader, IonToolbar, IonTitle, IonTextarea, IonProgressBar } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../hooks/useAuth';
-import { trash, people, home, star, diamond, trophy, flash, settings, person, checkmark, close } from 'ionicons/icons';
+import { trash, people, home, star, diamond, trophy, flash, settings, person, checkmark, close, add, cloudUpload } from 'ionicons/icons';
 import './UserAdmin.styles.css';
 
 const UserAdministrationPage: React.FC = () => {
@@ -61,6 +61,121 @@ const UserAdministrationPage: React.FC = () => {
 
   const [rawResponse, setRawResponse] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  
+  // Estados para creación masiva
+  const [showMassiveModal, setShowMassiveModal] = useState(false);
+  const [massiveUsersText, setMassiveUsersText] = useState('');
+  const [massiveProgress, setMassiveProgress] = useState(0);
+  const [massiveLoading, setMassiveLoading] = useState(false);
+  const [massiveResults, setMassiveResults] = useState<any[]>([]);
+
+  // Template de usuarios para ejemplo
+  const exampleUsers = `[
+  {
+    "name": "Carlos",
+    "lastName": "Martínez",
+    "email": "carlos.martinez@bodega.com",
+    "password": "bodega123",
+    "phoneNumber": "+56912345678",
+    "role": "bodeguero"
+  },
+  {
+    "name": "Ana",
+    "lastName": "González",
+    "email": "ana.gonzalez@bodega.com",
+    "password": "bodega123",
+    "phoneNumber": "+56912345679",
+    "role": "bodeguero"
+  },
+  {
+    "name": "Juan",
+    "lastName": "Pérez",
+    "email": "juan.perez@usuario.com",
+    "password": "user123",
+    "phoneNumber": "+56123456789",
+    "role": "usuario"
+  }
+]`;
+
+  const handleMassiveCreate = async () => {
+    if (!massiveUsersText.trim()) {
+      alert('Por favor, ingresa la lista de usuarios en formato JSON');
+      return;
+    }
+
+    try {
+      const usersArray = JSON.parse(massiveUsersText);
+      
+      if (!Array.isArray(usersArray)) {
+        alert('El formato debe ser un array de usuarios');
+        return;
+      }
+
+      setMassiveLoading(true);
+      setMassiveResults([]);
+      setMassiveProgress(0);
+
+      const results = [];
+      const total = usersArray.length;
+
+      for (let i = 0; i < usersArray.length; i++) {
+        const userData = usersArray[i];
+        
+        try {
+          const response = await fetch('/api/users/newUser', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+          });
+          
+          const data = await response.json();
+          
+          if (data.state) {
+            results.push({
+              index: i + 1,
+              name: userData.name,
+              email: userData.email,
+              status: 'success',
+              message: 'Usuario creado exitosamente'
+            });
+          } else {
+            results.push({
+              index: i + 1,
+              name: userData.name,
+              email: userData.email,
+              status: 'error',
+              message: data.message || 'Error al crear usuario'
+            });
+          }
+        } catch (error) {
+          results.push({
+            index: i + 1,
+            name: userData.name,
+            email: userData.email,
+            status: 'error',
+            message: 'Error de conexión'
+          });
+        }
+
+        setMassiveProgress((i + 1) / total);
+        setMassiveResults([...results]);
+      }
+
+      setMassiveLoading(false);
+      
+      // Refrescar la lista de usuarios
+      fetchUsers();
+      
+      const successCount = results.filter(r => r.status === 'success').length;
+      const errorCount = results.filter(r => r.status === 'error').length;
+      
+      alert(`Proceso completado: ${successCount} usuarios creados, ${errorCount} errores`);
+      
+    } catch (error) {
+      setMassiveLoading(false);
+      alert('Error al procesar el JSON. Verifica el formato.');
+    }
+  };
   const fetchUsers = async () => {
     setLoading(true);
     setErrorMsg(null);
@@ -143,6 +258,17 @@ const UserAdministrationPage: React.FC = () => {
           >
             <IonIcon icon={home} slot="start" />
             Volver al Panel
+          </IonButton>
+          
+          <IonButton
+            expand="block"
+            size="large"
+            color="secondary"
+            onClick={() => setShowMassiveModal(true)}
+            className="admin-nav-button massive"
+          >
+            <IonIcon icon={cloudUpload} slot="start" />
+            Crear Usuarios Masivamente
           </IonButton>
         </div>
 
@@ -351,6 +477,115 @@ const UserAdministrationPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Modal para creación masiva */}
+        <IonModal isOpen={showMassiveModal} onDidDismiss={() => setShowMassiveModal(false)}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Crear Usuarios Masivamente</IonTitle>
+              <IonButton 
+                slot="end" 
+                fill="clear" 
+                onClick={() => setShowMassiveModal(false)}
+              >
+                <IonIcon icon={close} />
+              </IonButton>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="massive-modal-content">
+            <div style={{ padding: '20px' }}>
+              <h3>Formato JSON requerido:</h3>
+              <p>Pega aquí un array de usuarios en formato JSON:</p>
+              
+              <IonButton 
+                fill="outline" 
+                size="small" 
+                onClick={() => setMassiveUsersText(exampleUsers)}
+                style={{ marginBottom: '10px' }}
+              >
+                <IonIcon icon={add} slot="start" />
+                Cargar Ejemplo
+              </IonButton>
+              
+              <textarea
+                value={massiveUsersText}
+                onChange={e => setMassiveUsersText(e.target.value)}
+                placeholder="Pega aquí el JSON con los usuarios..."
+                rows={15}
+                style={{ 
+                  width: '100%',
+                  border: '1px solid #ccc', 
+                  borderRadius: '5px',
+                  fontFamily: 'monospace',
+                  fontSize: '12px',
+                  padding: '10px',
+                  resize: 'vertical',
+                  backgroundColor: '#fff',
+                  color: '#000000'
+                }}
+              />
+              
+              {massiveLoading && (
+                <div style={{ marginTop: '20px' }}>
+                  <p>Creando usuarios... {Math.round(massiveProgress * 100)}%</p>
+                  <IonProgressBar value={massiveProgress} />
+                </div>
+              )}
+              
+              {massiveResults.length > 0 && (
+                <div style={{ marginTop: '20px' }}>
+                  <h4>Resultados:</h4>
+                  <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                    {massiveResults.map((result, index) => (
+                      <div 
+                        key={index} 
+                        style={{ 
+                          padding: '10px',
+                          margin: '5px 0',
+                          backgroundColor: result.status === 'success' ? '#d4edda' : '#f8d7da',
+                          borderRadius: '5px',
+                          fontSize: '14px'
+                        }}
+                      >
+                        <strong>{result.index}. {result.name} ({result.email})</strong>
+                        <br />
+                        <span style={{ color: result.status === 'success' ? '#155724' : '#721c24' }}>
+                          {result.message}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+                <IonButton 
+                  expand="block" 
+                  color="primary"
+                  onClick={handleMassiveCreate}
+                  disabled={massiveLoading}
+                >
+                  <IonIcon icon={cloudUpload} slot="start" />
+                  {massiveLoading ? 'Creando...' : 'Crear Usuarios'}
+                </IonButton>
+                
+                <IonButton 
+                  expand="block" 
+                  color="medium"
+                  fill="outline"
+                  onClick={() => {
+                    setMassiveUsersText('');
+                    setMassiveResults([]);
+                    setMassiveProgress(0);
+                  }}
+                  disabled={massiveLoading}
+                >
+                  Limpiar
+                </IonButton>
+              </div>
+            </div>
+          </IonContent>
+        </IonModal>
       </IonContent>
     </IonPage>
   );

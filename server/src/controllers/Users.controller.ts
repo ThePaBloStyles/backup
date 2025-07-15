@@ -60,7 +60,8 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const newUser = async (req: Request, res: Response) => {
   try {
-    const { userData } = req.body;
+    // Recibir directamente los datos del usuario
+    const userData = req.body;
     const newUser = new userModel(userData);
     await newUser.save();
     res.status(200).json({ state: true, newUser });

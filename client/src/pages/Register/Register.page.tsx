@@ -36,7 +36,7 @@ const RegisterPage: React.FC = () => {
       const response = await fetch('/api/users/newUser', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userData })
+        body: JSON.stringify(userData)
       });
       const data = await response.json();
       if (data.state) {

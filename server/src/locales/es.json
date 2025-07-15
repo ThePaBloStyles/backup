@@ -5,5 +5,6 @@
 	"Servidor corriendo en puerto %s": {
 		"one": "Servidor corriendo en puerto %s",
 		"other": "Servidor corriendo en puerto %s"
-	}
+	},
+	"Credentials are required": "Credentials are required"
 }
