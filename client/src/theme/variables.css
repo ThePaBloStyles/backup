@@ -165,3 +165,36 @@ ion-badge {
   align-items: center;
   justify-content: center;
 }
+
+/* OVERRIDE ESPECÍFICO PARA BODEGA PAGE - Eliminar background rosado */
+.bodega-page {
+  --ion-background-color: transparent !important;
+  --ion-background-color-rgb: 255, 255, 255 !important;
+  --ion-color-step-50: transparent !important;
+  --ion-color-step-100: transparent !important;
+  --ion-color-step-150: transparent !important;
+  --ion-color-step-200: transparent !important;
+  --ion-color-step-250: transparent !important;
+  --ion-color-step-300: transparent !important;
+  --ion-color-step-350: transparent !important;
+  --ion-color-step-400: transparent !important;
+  --ion-color-step-450: transparent !important;
+  --ion-color-step-500: transparent !important;
+  --ion-color-step-550: transparent !important;
+  --ion-color-step-600: transparent !important;
+  --ion-color-step-650: transparent !important;
+  --ion-color-step-700: transparent !important;
+  --ion-color-step-750: transparent !important;
+  --ion-color-step-800: transparent !important;
+  --ion-color-step-850: transparent !important;
+  --ion-color-step-900: transparent !important;
+  --ion-color-step-950: transparent !important;
+}
+
+/* Eliminar cualquier background rosado del sistema */
+.bodega-page ion-content,
+.bodega-page ion-app,
+.bodega-page ion-router-outlet {
+  --background: transparent !important;
+  background: transparent !important;
+}

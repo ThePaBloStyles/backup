@@ -237,7 +237,7 @@ const BodegaPage: React.FC = () => {
 
   return (
     <IonPage className="bodega-page">
-      <IonContent className="bodega-content" scrollY={true}>
+      <IonContent className="bodega-content" scrollY={true} fullscreen={true}>
         {/* Header de bienvenida */}
         <div className="bodega-header">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>

@@ -32,16 +32,51 @@
 .bodega-page {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
+  width: 100vw;
   padding: 0;
+  margin: 0;
   overflow-x: hidden;
+  position: relative;
+}
+
+.bodega-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: -1;
+}
+
+.bodega-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: -2;
+  width: 100vw;
+  height: 100vh;
 }
 
 .bodega-content {
   padding: var(--content-padding);
-  max-width: min(1400px, 95vw);
+  max-width: min(1400px, 100vw);
   margin: 0 auto;
   width: 100%;
+  min-height: 100vh;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-left: var(--content-padding) !important;
+  padding-right: var(--content-padding) !important;
 }
 
 /* Header principal */
@@ -582,7 +617,43 @@
   transform: scale(1.1);
 }
 
-/* Container queries y responsive design fluido */
+/* Asegurar que Ionic no interfiera con el fondo */
+.bodega-page ion-content {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --background: transparent;
+}
+
+.bodega-page ion-content::part(scroll) {
+  background: transparent;
+}
+
+/* Remover cualquier margen o padding del body e html */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+/* Asegurar que el ion-app ocupe todo el espacio */
+ion-app {
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+
+ion-router-outlet {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Responsive design fluido */
 @container (max-width: 768px) {
   .bodega-stats {
     grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
@@ -658,12 +729,18 @@
 /* Mejoras adicionales para adaptación automática */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .bodega-page {
   --width: 100%;
   --max-width: 100vw;
   container-type: inline-size;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .bodega-page ion-content {
@@ -671,6 +748,9 @@
   --padding-end: 0;
   --padding-top: 0;
   --padding-bottom: 0;
+  --background: transparent;
+  width: 100%;
+  height: 100%;
 }
 
 /* Asegurar que los elementos no se desborden */
@@ -911,4 +991,167 @@
 
 .bodega-stock-indicator.out {
   background: #6b7280;
+}
+
+/* Estilos específicos para eliminar espacios en blanco */
+.bodega-page {
+  position: relative;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+.bodega-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: -2;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Asegurar que el contenido no tenga márgenes laterales */
+.bodega-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-left: var(--content-padding) !important;
+  padding-right: var(--content-padding) !important;
+}
+
+/* Eliminar cualquier margen o padding del sistema Ionic */
+ion-app {
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+
+ion-router-outlet {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Asegurar que no haya ningún background rosado en ningún elemento */
+.bodega-page,
+.bodega-page *,
+.bodega-content,
+.bodega-content * {
+  background-color: transparent !important;
+}
+
+/* Solo el contenedor principal tendrá el gradient */
+.bodega-page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+/* Asegurar que no haya overflow horizontal */
+.bodega-page,
+.bodega-content,
+.bodega-stats,
+.bodega-actions,
+.bodega-filters,
+.bodega-products-grid {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+/* Responsive final fix */
+@media screen and (max-width: 768px) {
+  .bodega-page {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .bodega-content {
+    padding: 10px !important;
+  }
+}
+
+/* Eliminar cualquier sombra o border que pueda causar el efecto rosado */
+.bodega-page *:not(.bodega-stat-card):not(.bodega-product-card):not(.bodega-action-button) {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* FIX GLOBAL - Eliminar cualquier background rosado/púrpura */
+* {
+  box-sizing: border-box;
+}
+
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+/* Overrides globales para eliminar colores rosados */
+.bodega-page *,
+.bodega-page {
+  --ion-color-primary: #667eea !important;
+  --ion-color-primary-rgb: 102, 126, 234 !important;
+  --ion-color-primary-contrast: #ffffff !important;
+  --ion-color-primary-contrast-rgb: 255, 255, 255 !important;
+  --ion-color-primary-shade: #5a6fd8 !important;
+  --ion-color-primary-tint: #7688ec !important;
+  
+  --ion-color-secondary: #764ba2 !important;
+  --ion-color-secondary-rgb: 118, 75, 162 !important;
+  --ion-color-secondary-contrast: #ffffff !important;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255 !important;
+  --ion-color-secondary-shade: #68428f !important;
+  --ion-color-secondary-tint: #845cb5 !important;
+  
+  --ion-background-color: transparent !important;
+  --ion-background-color-rgb: 0, 0, 0 !important;
+  
+  --ion-text-color: #2c3e50 !important;
+  --ion-text-color-rgb: 44, 62, 80 !important;
+}
+
+/* Asegurar que no haya ningún background rosado en ningún elemento */
+.bodega-page,
+.bodega-page *,
+.bodega-content,
+.bodega-content * {
+  background-color: transparent !important;
+}
+
+/* Solo el contenedor principal tendrá el gradient */
+.bodega-page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+/* Asegurar que no haya overflow horizontal */
+.bodega-page,
+.bodega-content,
+.bodega-stats,
+.bodega-actions,
+.bodega-filters,
+.bodega-products-grid {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+/* Responsive final fix */
+@media screen and (max-width: 768px) {
+  .bodega-page {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .bodega-content {
+    padding: 10px !important;
+  }
+}
+
+/* Eliminar cualquier sombra o border que pueda causar el efecto rosado */
+.bodega-page *:not(.bodega-stat-card):not(.bodega-product-card):not(.bodega-action-button) {
+  box-shadow: none !important;
+  border: none !important;
 }
