@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../hooks/useAuth';
-import { trash, people, home, star, diamond, trophy, flash, settings, person, checkmark, close, add, cloudUpload } from 'ionicons/icons';
+import { trash, people, home, star, diamond, trophy, flash, settings, person, checkmark, close, add, cloudUpload, checkboxOutline, checkbox, personAdd, swapHorizontal } from 'ionicons/icons';
 import './UserAdmin.styles.css';
 
 const UserAdministrationPage: React.FC = () => {
@@ -12,6 +12,11 @@ const UserAdministrationPage: React.FC = () => {
   const [showSelector, setShowSelector] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string>('');
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  
+  // Estados para selección múltiple
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [multiSelectMode, setMultiSelectMode] = useState(false);
+  
   const history = useHistory();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -204,12 +209,102 @@ const UserAdministrationPage: React.FC = () => {
       const data = await res.json();
       if (data.state) {
         setUsers(users.filter((u: any) => u._id !== id));
+        // Actualizar selección múltiple
+        setSelectedUsers(selectedUsers.filter(userId => userId !== id));
+        if (selectedUser && selectedUser._id === id) {
+          setSelectedUser(null);
+        }
       } else {
         alert('No se pudo eliminar el usuario');
       }
     } catch (err) {
       alert('Error al eliminar usuario');
     }
+  };
+
+  // Funciones para selección múltiple
+  const toggleUserSelection = (userId: string) => {
+    if (selectedUsers.includes(userId)) {
+      setSelectedUsers(selectedUsers.filter(id => id !== userId));
+    } else {
+      setSelectedUsers([...selectedUsers, userId]);
+    }
+  };
+
+  const selectAllUsers = () => {
+    setSelectedUsers(users.map(user => user._id));
+  };
+
+  const clearSelection = () => {
+    setSelectedUsers([]);
+  };
+
+  const handleMultipleDelete = async () => {
+    if (selectedUsers.length === 0) {
+      alert('No hay usuarios seleccionados');
+      return;
+    }
+
+    if (!window.confirm(`¿Seguro que deseas eliminar ${selectedUsers.length} usuarios?`)) return;
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const userId of selectedUsers) {
+      try {
+        const res = await fetch(`/api/users/deleteUser/${userId}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.state) {
+          successCount++;
+        } else {
+          errorCount++;
+        }
+      } catch (err) {
+        errorCount++;
+      }
+    }
+
+    // Refrescar lista
+    fetchUsers();
+    setSelectedUsers([]);
+    
+    alert(`Eliminación completada: ${successCount} usuarios eliminados, ${errorCount} errores`);
+  };
+
+  const handleMultipleRoleChange = async (newRole: string) => {
+    if (selectedUsers.length === 0) {
+      alert('No hay usuarios seleccionados');
+      return;
+    }
+
+    if (!window.confirm(`¿Seguro que deseas cambiar el rol de ${selectedUsers.length} usuarios a ${newRole}?`)) return;
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const userId of selectedUsers) {
+      try {
+        const res = await fetch(`/api/users/updateUser/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: newRole }),
+        });
+        const data = await res.json();
+        if (data.state) {
+          successCount++;
+        } else {
+          errorCount++;
+        }
+      } catch (err) {
+        errorCount++;
+      }
+    }
+
+    // Refrescar lista
+    fetchUsers();
+    setSelectedUsers([]);
+    
+    alert(`Cambio de rol completado: ${successCount} usuarios actualizados, ${errorCount} errores`);
   };
 
   useEffect(() => {
@@ -270,7 +365,96 @@ const UserAdministrationPage: React.FC = () => {
             <IonIcon icon={cloudUpload} slot="start" />
             Crear Usuarios Masivamente
           </IonButton>
+
+          <IonButton
+            expand="block"
+            size="large"
+            color={multiSelectMode ? "warning" : "tertiary"}
+            onClick={() => {
+              setMultiSelectMode(!multiSelectMode);
+              setSelectedUsers([]);
+            }}
+            className="admin-nav-button multiselect"
+          >
+            <IonIcon icon={multiSelectMode ? checkboxOutline : personAdd} slot="start" />
+            {multiSelectMode ? 'Salir de Selección' : 'Selección Múltiple'}
+          </IonButton>
         </div>
+
+        {/* Panel de selección múltiple */}
+        {multiSelectMode && (
+          <div className="admin-multi-select-panel">
+            <div className="admin-multi-select-header">
+              <h3>
+                <IonIcon icon={checkboxOutline} style={{ marginRight: '8px' }} />
+                Selección Múltiple
+              </h3>
+              <IonChip color="primary">
+                {selectedUsers.length} usuarios seleccionados
+              </IonChip>
+            </div>
+            
+            <div className="admin-multi-select-actions">
+              <IonButton 
+                size="small" 
+                fill="outline" 
+                onClick={selectAllUsers}
+                disabled={selectedUsers.length === users.length}
+              >
+                <IonIcon icon={checkmark} slot="start" />
+                Seleccionar Todo
+              </IonButton>
+              
+              <IonButton 
+                size="small" 
+                fill="outline" 
+                onClick={clearSelection}
+                disabled={selectedUsers.length === 0}
+              >
+                <IonIcon icon={close} slot="start" />
+                Limpiar
+              </IonButton>
+              
+              {selectedUsers.length > 0 && (
+                <>
+                  <IonButton 
+                    size="small" 
+                    color="danger" 
+                    onClick={handleMultipleDelete}
+                  >
+                    <IonIcon icon={trash} slot="start" />
+                    Eliminar ({selectedUsers.length})
+                  </IonButton>
+                  
+                  <div className="admin-multi-role-actions">
+                    <span>Cambiar rol a:</span>
+                    <IonButton 
+                      size="small" 
+                      color="secondary" 
+                      onClick={() => handleMultipleRoleChange('usuario')}
+                    >
+                      Usuario
+                    </IonButton>
+                    <IonButton 
+                      size="small" 
+                      color="secondary" 
+                      onClick={() => handleMultipleRoleChange('bodeguero')}
+                    >
+                      Bodeguero
+                    </IonButton>
+                    <IonButton 
+                      size="small" 
+                      color="secondary" 
+                      onClick={() => handleMultipleRoleChange('administrador')}
+                    >
+                      Admin
+                    </IonButton>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Contenido principal */}
         <div className="admin-content">
@@ -433,6 +617,17 @@ const UserAdministrationPage: React.FC = () => {
                     <IonList className="admin-users-list">
                       {users.map((user: any) => (
                         <IonItem key={user.id || user._id} className="admin-user-item">
+                          {multiSelectMode && (
+                            <IonButton
+                              slot="start"
+                              fill="clear"
+                              color={selectedUsers.includes(user._id) ? "primary" : "medium"}
+                              onClick={() => toggleUserSelection(user._id)}
+                              className="admin-checkbox-button"
+                            >
+                              <IonIcon icon={selectedUsers.includes(user._id) ? checkbox : checkboxOutline} />
+                            </IonButton>
+                          )}
                           <div className="admin-user-item-avatar">
                             {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                           </div>
@@ -444,15 +639,17 @@ const UserAdministrationPage: React.FC = () => {
                               </IonChip>
                             </div>
                           </IonLabel>
-                          <IonButton 
-                            color="danger" 
-                            fill="clear"
-                            slot="end" 
-                            onClick={() => handleDelete(user.id || user._id)}
-                            className="admin-delete-button"
-                          >
-                            <IonIcon icon={trash} />
-                          </IonButton>
+                          {!multiSelectMode && (
+                            <IonButton 
+                              color="danger" 
+                              fill="clear"
+                              slot="end" 
+                              onClick={() => handleDelete(user.id || user._id)}
+                              className="admin-delete-button"
+                            >
+                              <IonIcon icon={trash} />
+                            </IonButton>
+                          )}
                         </IonItem>
                       ))}
                     </IonList>
