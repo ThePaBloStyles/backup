@@ -17,6 +17,8 @@ export const HomeContainer = () => {
     const { cartCount } = useCart();
     const { isAuthenticated, user, logout } = useAuth();
     const [searchText, setSearchText] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
+    const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
     const history = useHistory();
 
     const handleLogout = () => {
@@ -33,13 +35,91 @@ export const HomeContainer = () => {
         }
     };
 
+    // Filtrar productos según el texto de búsqueda y categorías
+    const filteredItems = items.filter((item: any) => {
+        // Filtro por texto de búsqueda
+        let matchesSearch = true;
+        if (searchText) {
+            const searchLower = searchText.toLowerCase();
+            matchesSearch = (
+                item.name?.toLowerCase().includes(searchLower) ||
+                item.title?.toLowerCase().includes(searchLower) ||
+                item.description?.toLowerCase().includes(searchLower) ||
+                item.category?.toLowerCase().includes(searchLower) ||
+                item.brand?.toLowerCase().includes(searchLower) ||
+                item.sku?.toLowerCase().includes(searchLower)
+            );
+        }
+
+        // Filtro por categoría principal
+        let matchesCategory = true;
+        if (selectedCategory) {
+            matchesCategory = item.category?.toLowerCase().includes(selectedCategory.toLowerCase());
+        }
+
+        // Filtro por subcategoría
+        let matchesSubcategory = true;
+        if (selectedSubcategory) {
+            matchesSubcategory = (
+                item.subcategory?.toLowerCase().includes(selectedSubcategory.toLowerCase()) ||
+                item.name?.toLowerCase().includes(selectedSubcategory.toLowerCase()) ||
+                item.description?.toLowerCase().includes(selectedSubcategory.toLowerCase())
+            );
+        }
+
+        return matchesSearch && matchesCategory && matchesSubcategory;
+    });
+
+    // Función para manejar filtros desde el menú
+    const handleCategoryFilter = (category: string) => {
+        setSelectedCategory(category);
+        setSelectedSubcategory(''); // Limpiar subcategoría al cambiar categoría
+    };
+
+    const handleSubcategoryFilter = (subcategory: string) => {
+        setSelectedSubcategory(subcategory);
+    };
+
+    // Función para limpiar todos los filtros
+    const clearAllFilters = () => {
+        setSearchText('');
+        setSelectedCategory('');
+        setSelectedSubcategory('');
+    };
+
+    // Función para obtener el título basado en filtros activos
+    const getFilterTitle = () => {
+        if (searchText && selectedCategory && selectedSubcategory) {
+            return `Resultados para "${searchText}" en ${selectedCategory} > ${selectedSubcategory}`;
+        } else if (searchText && selectedCategory) {
+            return `Resultados para "${searchText}" en ${selectedCategory}`;
+        } else if (searchText && selectedSubcategory) {
+            return `Resultados para "${searchText}" en ${selectedSubcategory}`;
+        } else if (selectedCategory && selectedSubcategory) {
+            return `${selectedCategory} > ${selectedSubcategory}`;
+        } else if (selectedCategory) {
+            return `Categoría: ${selectedCategory}`;
+        } else if (selectedSubcategory) {
+            return `Subcategoría: ${selectedSubcategory}`;
+        } else if (searchText) {
+            return `Resultados para "${searchText}"`;
+        }
+        return 'Productos filtrados';
+    };
+
     useEffect(() => {
-        console.log({ items });
-    }, [items]);
+        console.log({ items, searchText, filteredItems, selectedCategory, selectedSubcategory });
+    }, [items, searchText, filteredItems, selectedCategory, selectedSubcategory]);
 
     return (
         <>
-            <SideMenu />
+            <SideMenu 
+                onCategoryFilter={handleCategoryFilter}
+                onSubcategoryFilter={handleSubcategoryFilter}
+                selectedCategory={selectedCategory}
+                selectedSubcategory={selectedSubcategory}
+                onClearFilters={clearAllFilters}
+            />
             <IonContent className="home-content" id="main-content">
                 <div className="home-background">
                     {/* Header Principal con el mismo estilo de la barra negra */}
@@ -68,10 +148,22 @@ export const HomeContainer = () => {
                                 <IonSearchbar
                                     value={searchText}
                                     onIonInput={(e) => setSearchText(e.detail.value!)}
+                                    onIonClear={() => setSearchText('')}
                                     placeholder="Buscar productos..."
                                     className="modern-searchbar"
                                     searchIcon={search}
+                                    showClearButton="focus"
+                                    debounce={300}
                                 />
+                                {searchText && (
+                                    <div className="search-info">
+                                        <span className="search-results-count">
+                                            {filteredItems.length} resultado{filteredItems.length !== 1 ? 's' : ''}
+                                            {selectedCategory && ` en ${selectedCategory}`}
+                                            {selectedSubcategory && ` > ${selectedSubcategory}`}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Iconos de la derecha */}
@@ -172,20 +264,57 @@ export const HomeContainer = () => {
                     </div>
 
                     {/* Sección de productos estirada */}
-                    {items.length > 0 && (
+                    {filteredItems.length > 0 && (
                         <div className="products-main-section">
                             <IonGrid className="products-main-grid">
                                 <IonRow className="ion-justify-content-center">
                                     <IonCol size="12">
                                         <div className="products-container">
                                             <div className="products-header">
-                                                <h2>Nuestros Productos</h2>
-                                                <p>Descubre nuestra amplia gama de productos profesionales</p>
+                                                <h2>
+                                                    {searchText || selectedCategory || selectedSubcategory
+                                                        ? `${getFilterTitle()} (${filteredItems.length})`
+                                                        : 'Nuestros Productos'
+                                                    }
+                                                </h2>
+                                                <p>
+                                                    {searchText || selectedCategory || selectedSubcategory
+                                                        ? `Mostrando ${filteredItems.length} de ${items.length} productos`
+                                                        : 'Descubre nuestra amplia gama de productos profesionales'
+                                                    }
+                                                </p>
+                                                
+                                                {/* Filtros activos */}
+                                                {(searchText || selectedCategory || selectedSubcategory) && (
+                                                    <div className="active-filters-display">
+                                                        {searchText && (
+                                                            <span className="filter-tag search-tag">
+                                                                Búsqueda: "{searchText}"
+                                                            </span>
+                                                        )}
+                                                        {selectedCategory && (
+                                                            <span className="filter-tag category-tag">
+                                                                Categoría: {selectedCategory}
+                                                            </span>
+                                                        )}
+                                                        {selectedSubcategory && (
+                                                            <span className="filter-tag subcategory-tag">
+                                                                Subcategoría: {selectedSubcategory}
+                                                            </span>
+                                                        )}
+                                                        <button 
+                                                            className="clear-all-filters-btn"
+                                                            onClick={clearAllFilters}
+                                                        >
+                                                            Limpiar todos los filtros
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
                                             
                                             <IonGrid className="products-display-grid">
                                                 <IonRow className="products-row">
-                                                    {items.map((item: any, index: number) => {
+                                                    {filteredItems.map((item: any, index: number) => {
                                                         return (
                                                             <IonCol 
                                                                 key={index} 
@@ -202,6 +331,48 @@ export const HomeContainer = () => {
                                                     })}
                                                 </IonRow>
                                             </IonGrid>
+                                        </div>
+                                    </IonCol>
+                                </IonRow>
+                            </IonGrid>
+                        </div>
+                    )}
+
+                    {/* Mensaje cuando no hay resultados de búsqueda */}
+                    {(searchText || selectedCategory || selectedSubcategory) && filteredItems.length === 0 && (
+                        <div className="no-results-section">
+                            <IonGrid className="products-main-grid">
+                                <IonRow className="ion-justify-content-center">
+                                    <IonCol size="12">
+                                        <div className="no-results-container">
+                                            <IonIcon icon={search} className="no-results-icon" />
+                                            <h2>No se encontraron productos</h2>
+                                            <p>No hay productos que coincidan con los filtros aplicados:</p>
+                                            <div className="no-results-filters">
+                                                {searchText && (
+                                                    <span className="no-results-filter">
+                                                        Búsqueda: "{searchText}"
+                                                    </span>
+                                                )}
+                                                {selectedCategory && (
+                                                    <span className="no-results-filter">
+                                                        Categoría: {selectedCategory}
+                                                    </span>
+                                                )}
+                                                {selectedSubcategory && (
+                                                    <span className="no-results-filter">
+                                                        Subcategoría: {selectedSubcategory}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <IonButton 
+                                                fill="outline" 
+                                                color="primary"
+                                                onClick={clearAllFilters}
+                                                className="clear-search-button"
+                                            >
+                                                Limpiar todos los filtros
+                                            </IonButton>
                                         </div>
                                     </IonCol>
                                 </IonRow>
@@ -291,6 +462,52 @@ export const HomeContainer = () => {
                         --placeholder-color: #6c7b7f;
                         border: none;
                         backdrop-filter: blur(10px);
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .modern-searchbar:focus-within,
+                    .modern-searchbar.searchbar-has-value {
+                        --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+                        transform: translateY(-1px);
+                    }
+                    
+                    /* Indicador de búsqueda activa */
+                    .search-container:has(.searchbar-has-value) {
+                        position: relative;
+                    }
+                    
+                    .search-container:has(.searchbar-has-value)::after {
+                        content: '';
+                        position: absolute;
+                        bottom: -2px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 60%;
+                        height: 2px;
+                        background: linear-gradient(90deg, #2c3e50, #34495e);
+                        border-radius: 2px;
+                        opacity: 0.7;
+                    }
+                    
+                    .search-info {
+                        position: absolute;
+                        top: 100%;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        margin-top: 8px;
+                        z-index: 1000;
+                    }
+                    
+                    .search-results-count {
+                        background: rgba(44, 62, 80, 0.9);
+                        color: white;
+                        padding: 4px 12px;
+                        border-radius: 12px;
+                        font-size: 12px;
+                        font-weight: 500;
+                        white-space: nowrap;
+                        backdrop-filter: blur(10px);
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
                     }
                     
                     /* Searchbar en modo oscuro */
@@ -300,6 +517,20 @@ export const HomeContainer = () => {
                             --color: #e0e0e0;
                             --placeholder-color: #b0b0b0;
                             --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                        }
+                        
+                        .modern-searchbar:focus-within,
+                        .modern-searchbar.searchbar-has-value {
+                            --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+                        }
+                        
+                        .search-container:has(.searchbar-has-value)::after {
+                            background: linear-gradient(90deg, #e2e8f0, #f7fafc);
+                        }
+                        
+                        .search-results-count {
+                            background: rgba(226, 232, 240, 0.9);
+                            color: #2d3748;
                         }
                     }
                     
@@ -595,6 +826,209 @@ export const HomeContainer = () => {
                     .product-display-col ion-card:hover {
                         transform: translateY(-8px) scale(1.02);
                         box-shadow: 0 15px 40px rgba(74, 74, 74, 0.25);
+                    }
+                    
+                    /* Estilos para "no hay resultados" */
+                    .no-results-section {
+                        flex: 1;
+                        padding: 40px 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 300px;
+                    }
+                    
+                    .no-results-container {
+                        background: rgba(255, 255, 255, 0.95);
+                        border-radius: 20px;
+                        padding: 60px 40px;
+                        text-align: center;
+                        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+                        backdrop-filter: blur(10px);
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        max-width: 500px;
+                        width: 100%;
+                    }
+                    
+                    .no-results-icon {
+                        font-size: 64px;
+                        color: #cbd5e0;
+                        margin-bottom: 20px;
+                    }
+                    
+                    .no-results-container h2 {
+                        margin: 0 0 15px 0;
+                        font-size: 24px;
+                        font-weight: 600;
+                        color: #2c3e50;
+                    }
+                    
+                    .no-results-container p {
+                        margin: 0 0 30px 0;
+                        color: #5a6c7d;
+                        font-size: 16px;
+                        line-height: 1.5;
+                    }
+                    
+                    .clear-search-button {
+                        --background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                        --color: #ffffff;
+                        --border-radius: 15px;
+                        --box-shadow: 0 8px 30px rgba(44, 62, 80, 0.3);
+                        height: 45px;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .clear-search-button:hover {
+                        transform: translateY(-2px);
+                        --box-shadow: 0 12px 40px rgba(44, 62, 80, 0.4);
+                    }
+                    
+                    /* Estilos para filtros activos */
+                    .active-filters-display {
+                        margin-top: 20px;
+                        padding: 15px;
+                        background: rgba(52, 152, 219, 0.1);
+                        border-radius: 12px;
+                        border: 1px solid rgba(52, 152, 219, 0.2);
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                        align-items: center;
+                    }
+                    
+                    .filter-tag {
+                        display: inline-block;
+                        padding: 6px 12px;
+                        border-radius: 20px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        white-space: nowrap;
+                    }
+                    
+                    .search-tag {
+                        background: rgba(52, 152, 219, 0.2);
+                        color: #2980b9;
+                        border: 1px solid rgba(52, 152, 219, 0.3);
+                    }
+                    
+                    .category-tag {
+                        background: rgba(142, 68, 173, 0.2);
+                        color: #8e44ad;
+                        border: 1px solid rgba(142, 68, 173, 0.3);
+                    }
+                    
+                    .subcategory-tag {
+                        background: rgba(230, 126, 34, 0.2);
+                        color: #e67e22;
+                        border: 1px solid rgba(230, 126, 34, 0.3);
+                    }
+                    
+                    .clear-all-filters-btn {
+                        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 20px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+                    }
+                    
+                    .clear-all-filters-btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+                    }
+                    
+                    .no-results-filters {
+                        margin: 20px 0;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        justify-content: center;
+                    }
+                    
+                    .no-results-filter {
+                        background: rgba(52, 152, 219, 0.1);
+                        color: #2980b9;
+                        padding: 4px 8px;
+                        border-radius: 12px;
+                        font-size: 12px;
+                        font-weight: 500;
+                        border: 1px solid rgba(52, 152, 219, 0.2);
+                    }
+                    
+                    /* Estilos para "no hay resultados" en modo oscuro */
+                    @media (prefers-color-scheme: dark) {
+                        .no-results-container {
+                            background: rgba(35, 35, 35, 0.95);
+                            border: 1px solid rgba(255, 255, 255, 0.05);
+                            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+                        }
+                        
+                        .no-results-icon {
+                            color: #4a5568;
+                        }
+                        
+                        .no-results-container h2 {
+                            color: #e0e0e0;
+                        }
+                        
+                        .no-results-container p {
+                            color: #b0b0b0;
+                        }
+                        
+                        .clear-search-button {
+                            --background: linear-gradient(135deg, #e2e8f0 0%, #f7fafc 100%);
+                            --color: #2d3748;
+                            --box-shadow: 0 8px 30px rgba(226, 232, 240, 0.3);
+                        }
+                        
+                        .clear-search-button:hover {
+                            --box-shadow: 0 12px 40px rgba(226, 232, 240, 0.4);
+                        }
+                        
+                        /* Filtros activos en modo oscuro */
+                        .active-filters-display {
+                            background: rgba(88, 166, 255, 0.1);
+                            border: 1px solid rgba(88, 166, 255, 0.2);
+                        }
+                        
+                        .search-tag {
+                            background: rgba(88, 166, 255, 0.2);
+                            color: #58a6ff;
+                            border: 1px solid rgba(88, 166, 255, 0.3);
+                        }
+                        
+                        .category-tag {
+                            background: rgba(210, 153, 255, 0.2);
+                            color: #d299ff;
+                            border: 1px solid rgba(210, 153, 255, 0.3);
+                        }
+                        
+                        .subcategory-tag {
+                            background: rgba(255, 184, 108, 0.2);
+                            color: #ffb86c;
+                            border: 1px solid rgba(255, 184, 108, 0.3);
+                        }
+                        
+                        .clear-all-filters-btn {
+                            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+                            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+                        }
+                        
+                        .clear-all-filters-btn:hover {
+                            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+                        }
+                        
+                        .no-results-filter {
+                            background: rgba(88, 166, 255, 0.1);
+                            color: #58a6ff;
+                            border: 1px solid rgba(88, 166, 255, 0.2);
+                        }
                     }
                     
                     /* Responsive Design Mejorado */
