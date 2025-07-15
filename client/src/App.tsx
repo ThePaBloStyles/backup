@@ -35,7 +35,6 @@ import { LoginPage } from './pages/Login/Login.page';
 import HomePage from './pages/Home/Home.page';
 import AdminPage from './pages/Admin/Admin.page';
 import AdminUsersPage from './pages/Admin/AdminUsers.page';
-import AdminProductsPage from './pages/Admin/AdminProducts.page';
 import BodegaPage from './pages/Bodega/Bodega.page';
 import FormulariosPage from './pages/Formularios/Formularios.page';
 import RegisterPage from './pages/Register/Register.page';
@@ -71,9 +70,6 @@ const Service = () => {
         </Route>
         <Route exact path="/admin/users">
           <AdminUsersPage />
-        </Route>
-        <Route exact path="/admin/products">
-          <AdminProductsPage />
         </Route>
         <Route exact path="/bodega">
           <BodegaPage />
