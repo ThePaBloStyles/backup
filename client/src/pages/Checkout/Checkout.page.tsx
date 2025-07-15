@@ -13,13 +13,25 @@ import api from '../../utils/api';
 
 const CheckoutPage: React.FC = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
-  const { isAuthenticated, user, loading: authLoading, authMessage, requireAuth } = useAuth();
+  const { isAuthenticated, user, loading: authLoading, authMessage, requireAuth, checkAuth } = useAuth();
   const history = useHistory();
   
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('webpay');
+  const [retryingAuth, setRetryingAuth] = useState(false);
+
+  const handleRetryAuth = async () => {
+    setRetryingAuth(true);
+    try {
+      await checkAuth();
+    } catch (error) {
+      console.error('Error al reintentar autenticación:', error);
+    } finally {
+      setRetryingAuth(false);
+    }
+  };
 
   // Verificar autenticación al cargar la página
   useEffect(() => {
@@ -189,7 +201,18 @@ const CheckoutPage: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <IonLoading isOpen={true} message={authMessage || "Verificando tu sesión..."} />
+          <IonGrid>
+            <IonRow className="ion-justify-content-center ion-align-items-center" style={{ minHeight: '60vh' }}>
+              <IonCol size="12" sizeMd="8" sizeLg="6">
+                <IonCard>
+                  <IonCardContent className="ion-text-center">
+                    <IonLoading isOpen={true} message={authMessage || "Verificando tu sesión..."} />
+                    <p style={{ marginTop: '20px' }}>Por favor espera...</p>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
         </IonContent>
       </IonPage>
     );
@@ -215,9 +238,19 @@ const CheckoutPage: React.FC = () => {
               <IonCol size="12" sizeMd="8" sizeLg="6">
                 <IonCard>
                   <IonCardContent className="ion-text-center">
+                    <IonLoading isOpen={retryingAuth} message="Reintentando verificación..." />
                     <IonIcon icon={logIn} size="large" color="primary" />
                     <h2>Inicia Sesión para Continuar</h2>
                     <p>{authMessage || "Para realizar una compra necesitas tener una cuenta e iniciar sesión."}</p>
+                    <IonButton 
+                      expand="block" 
+                      onClick={handleRetryAuth}
+                      disabled={retryingAuth}
+                      color="warning"
+                      style={{ marginBottom: '12px' }}
+                    >
+                      Reintentar Verificación
+                    </IonButton>
                     <IonButton expand="block" routerLink="/login" color="primary">
                       <IonIcon icon={logIn} slot="start" />
                       Iniciar Sesión

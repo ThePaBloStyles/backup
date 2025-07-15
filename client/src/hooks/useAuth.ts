@@ -32,18 +32,18 @@ export const useAuth = () => {
         return false;
       }
 
-      // Si hay token, intentar verificar pero con timeout agresivo
+      // Si hay token, intentar verificar pero con timeout más corto
       setAuthMessage('Verificando su sesión...');
       
       try {
         const response = await Promise.race([
           api.get('/api/auth/verify'),
           new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Timeout')), 1500) // 1.5 segundos máximo
+            setTimeout(() => reject(new Error('Timeout')), 3000) // 3 segundos máximo
           )
         ]) as any;
 
-        if (response.status === 200 && response.data) {
+        if (response.status === 200 && response.data && response.data.success) {
           const data = response.data;
           setIsAuthenticated(true);
           setUser(data.user);
@@ -56,13 +56,30 @@ export const useAuth = () => {
       } catch (error: any) {
         console.log('Error en verificación:', error.message);
         
+        // Si es timeout o error de red, intentar una vez más
+        if (error.message === 'Timeout' || error.code === 'NETWORK_ERROR') {
+          try {
+            const retryResponse = await api.get('/api/auth/verify');
+            if (retryResponse.status === 200 && retryResponse.data && retryResponse.data.success) {
+              const data = retryResponse.data;
+              setIsAuthenticated(true);
+              setUser(data.user);
+              setLoading(false);
+              setAuthMessage('');
+              return true;
+            }
+          } catch (retryError) {
+            console.log('Error en segundo intento:', retryError);
+          }
+        }
+        
         // Cualquier error = limpiar y mostrar login
         localStorage.removeItem('token');
         localStorage.removeItem('userRole');
         setIsAuthenticated(false);
         setUser(null);
         setLoading(false);
-        setAuthMessage('Inicie sesión por favor');
+        setAuthMessage('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
         return false;
       }
     } catch (error) {
@@ -70,7 +87,7 @@ export const useAuth = () => {
       setIsAuthenticated(false);
       setUser(null);
       setLoading(false);
-      setAuthMessage('Inicie sesión por favor');
+      setAuthMessage('Error de conexión. Por favor, inicia sesión nuevamente.');
       return false;
     }
   };
@@ -112,16 +129,16 @@ export const useAuth = () => {
       return;
     }
 
-    // Timeout de seguridad de 2 segundos
+    // Timeout de seguridad de 5 segundos
     const timeoutId = setTimeout(() => {
       console.log('Timeout de verificación alcanzado');
       setLoading(false);
-      setAuthMessage('Inicie sesión por favor');
+      setAuthMessage('Error de conexión. Por favor, inicia sesión nuevamente.');
       setIsAuthenticated(false);
       setUser(null);
       localStorage.removeItem('token');
       localStorage.removeItem('userRole');
-    }, 2000);
+    }, 5000);
 
     // Ejecutar verificación
     checkAuth().finally(() => {

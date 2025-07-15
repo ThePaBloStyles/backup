@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run build && nodemon",
-    "build": "npx tsc && npx tsc-alias"
+    "build": "npx tsc && npx tsc-alias",
+    "start-dev": "cd dist && node server.js"
   },
   "keywords": [],
   "author": "",
