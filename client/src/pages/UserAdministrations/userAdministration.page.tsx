@@ -313,8 +313,8 @@ const UserAdministrationPage: React.FC = () => {
 
   // Bloque de depuración: mostrar el array users como texto plano
   return (
-    <IonPage>
-      <IonContent>
+    <IonPage className="admin-page">
+      <IonContent className="admin-content">
         {/* Header de bienvenida */}
         <div className="admin-header">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
